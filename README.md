@@ -16,4 +16,9 @@ The project provides the US stock investors an intelligent stock analytical tool
 - Classification
 
 #Start HTTP Server:
+```python
 python start.py
+```
+
+API:
+http://linserv2.cims.nyu.edu:37184/search?q=STOCKNAME
