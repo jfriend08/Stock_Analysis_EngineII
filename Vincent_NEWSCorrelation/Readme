@@ -1,0 +1,26 @@
+The algorithm evaluates how close the relationship between any two companies would be. The definition of "relationship" is how frequently two companies are mentioned in the same article. Since the true "relationship" can change gradually, we set time-dacay weights for different years, e.g. in recently year the weight is 10, and for the farmost year the weight decreases to 4.
+
+
+
+
+Data: over 160,000 financial news articles from Bloomberg News Website uploaded on google dirve.
+
+
+
+Steps:
+
+first to run mapreduce to get the relationship score for each pair of companies.
+second to run pig to rank the companies according to their relationship score.
+
+
+
+
+Output:
+
+the final output is "pig_ticker_output/part-r-00000"
+
+e.g.
+AAPL	GOOG	10553
+GOOG	AAPL	10553
+
+the score of APPL GOOG pair is 10553. The replication of AAPL GOOG and GOOG AAPL is only for the convenience of searching when need to ouput the result.

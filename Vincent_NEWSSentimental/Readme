@@ -1,0 +1,7 @@
+Each mapper task will accept a company tag. It then will go to Seekingalpha website to parse the latest news and comments (usually tens of thousands for big stock and hundreds for ordinary stocks). The second step is to simply call the Stanford NLP library to "grade" the sentimenal score for each comment/news and calculate the average sentimental score for each stock. Higher score means more positive sentiment.
+
+Data: latest news/comments from SeekingAlpha website
+
+Ouput: output/part-r-00000
+
+This algorithm has to be run on real hadoop cluster.

@@ -1,0 +1,39 @@
+Description:
+Use binary online logistic regression model to predict the probability of a company's revenue trend in the next year: either increasing revenue for the next fiscal year (e.g. revenue in 2015 is higher than revenue in 2014) or decreasing/negative revenue for the next fiscal year (e.g. revenue in 2015 is lower than revenue in 2014; or both revenues for 2015 and 2014 are negative, which means the company is losing money in both the current and the predicted year).
+
+
+
+Model:
+
+Online Logistic Regression Factor Model
+
+Y = trend of revenue in 2015 with logit distribution (Y is binary classification. class 1: increasing revenue; class 0: decreasing revenue)
+
+Xs are 10 factors from the year 2014:
+X1 = Current ratio
+X2 = Free Cash Flow/Sales
+X3 = Gross Margin
+X4 = Asset Turnover (Average)
+X5 = Receivables Turnover
+X6 = Free Cash Flow/Sales
+X7 = Operating Margin
+X8 = Debt to asset ratio
+X9 = Operating cash flow per share
+X10 = Operating cash floww/total assets
+
+
+
+Model Evaluation:
+
+65% accuracy. It is a "good"/"acceptable" prediction accuracy level for financial model.
+
+
+Data:
+Training data: "alldata" file, data from 2011 to 2013;
+
+Predictio data: "2014" file, to predict revenue trend in 2015;
+
+Output: "output" file, first column is stock tag; second column is the probability of increasing revenue in 2015;
+e.g. 
+IBM	0.830
+IBM has a probability of 83% achieving higher revenue in 2015 than that in 2014. We can classify IBM as class "1".
