@@ -18,6 +18,9 @@ The project provides the US stock investors an intelligent stock analytical tool
 #Start HTTP Server:
 ```python
 python start.py
+
+#It will return the port it is listening:
+#Front end will listen to: http://linserv2.cims.nyu.edu:37184
 ```
 
 API:
