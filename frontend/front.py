@@ -10,6 +10,8 @@ import json
 from tornado.httpclient import AsyncHTTPClient
 from tornado import gen
 from tornado.options import define, options
+import tornado.web as web
+from tornado.template import Loader
 
 from constants import color
 bcolors = color.bcolors()
@@ -19,13 +21,14 @@ ports=[]
 ports_index = []
 ports_Doc = []
 
-# print "front end: http://linserv2.cims.nyu.edu:" + str(ports[0])
+# base = str("<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags --><title>Bootstrap 101 Template</title><!-- Bootstrap --><link href="web_beautify/css/bootstrap.min.css" rel="stylesheet"><link href="web_beautify/css/customized.css" rel="stylesheet"><script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script><script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><script type="text/javascript"></script></head><body>%s</body></html>")
 
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", HomeHandler),            
             (r"/search", SearchHandler),
+            (r'/(.*)', web.StaticFileHandler, {'path': "web_beautify/js/2c.js"}),
             (r'/(\d{4})/(\d{2})/(\d{2})/([a-zA-Z\-0-9\.:,_]+)/?', DetailHandler)            
         ]        
         tornado.web.Application.__init__(self, handlers)
@@ -46,7 +49,18 @@ class SearchHandler(tornado.web.RequestHandler):
             print bcolors.LIGHTBLUE + "Fetching index server " + toFetch + bcolors.ENDC
             http_client = AsyncHTTPClient()                                
             tmp_response = yield http_client.fetch(toFetch)                        
-            self.write(tmp_response.body)
+
+
+        # self.write("Hi")
+        self.write(tmp_response.body)        
+        # self.write(loader.load("myindex.html"))
+        # self.render("../web_beautify/myindex.html")
+            # self.render("../web_beautify/demo1.html")
+            
+            # self.render("../web_beautify/demo1.html" )
+            # report = base % tmp_response.body
+            # self.write(report)
+
             # n=json.loads(tmp_response.body)                        
             # doc_list.extend(n[n.keys()[0]])            
 
@@ -76,8 +90,9 @@ count=0
 class HomeHandler(tornado.web.RequestHandler):
     @gen.coroutine     
     def get(self):    	
-    	global count
-        self.write("Reflesh Count:" + str(count))
+    	global count        
+        self.render("../web_beautify/demo1.html")
+        # self.write("Reflesh Count:" + str(count))
         count=count+1
 
 class DetailHandler(tornado.web.RequestHandler):

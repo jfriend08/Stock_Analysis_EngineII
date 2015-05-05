@@ -13,8 +13,10 @@ from nltk.tokenize import RegexpTokenizer
 from tornado.httpclient import AsyncHTTPClient
 from tornado import gen
 from tornado.options import define, options
+import tornado.web as web
 
 from operator import mul
+
 
 IndustryCorrelation = {}
 tokenizer = None
@@ -27,106 +29,109 @@ classification = {}
 from constants import color
 bcolors = color.bcolors()
 
+
+def plot(superList):
+    finalOut=""
+    for i in range(len(superList)):
+        elmList = []
+        valList = []
+        myreturn="<script type=%s>$(function () {$('#container%s').highcharts({chart: {type: 'column'},"%("\"text/javascript\"", i)
+        myreturn+="title: {text: 'Related Industries Ranking'},subtitle: {text: 'Source: stock engine'},"
+        print "============ %s ============" % i
+        for (elm,val) in superList[i]:
+            elmList.append(str(elm))
+            valList.append("{name: '%s',data: [%s]}"%(elm,val))
+            print "elm:\t%s\tval:%s\tType(elm):%s"%(elm,val,type(elm))
+        print "+++++ elmList +++++\n%s"%elmList
+        myreturn+="xAxis: {categories: %s,crosshair: true}," % str(elmList)
+        myreturn+="yAxis: {min: 0,title: {text: 'correlation count'}},"
+        myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
+        myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});</script>"%(",".join(valList))
+        
+        finalOut+=myreturn
+    # myreturn= ""
+    # myreturn+="<script type=%s>$(function () {$('#container').highcharts({chart: {type: 'column'},"%("\"text/javascript\"")
+    # myreturn+="title: {text: 'Related Industries Ranking'},subtitle: {text: 'Source: stock engine'},"
+    # myreturn+="xAxis: {categories: ['Computer Communications Equipment','Electronic Components','Computer Software: Prepackaged Software','Semiconductors','Packaged Foods','Telecommunications Equipment','EDP Services',],crosshair: true},"
+    # myreturn+="yAxis: {min: 0,title: {text: 'correlation rate'}},"
+    # myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
+    # myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [{name: 'self',data: [49.9]}, {name: 'avg',data: [78.8]}, {name: 'max',data: [39.3]}, {name: 'min',data: [57.4]        }]});});    </script>"
+    return finalOut
+
+
+def plot1():
+    myreturn= ""
+    myreturn+="<script type=%s>$(function () {$('#container1').highcharts({chart: {type: 'column'},"%("\"text/javascript\"")
+    myreturn+="title: {text: 'Related Industries Ranking'},subtitle: {text: 'Source: stock engine'},"
+    myreturn+="xAxis: {categories: ['Computer Communications Equipment','Electronic Components','Computer Software: Prepackaged Software','Semiconductors','Packaged Foods','Telecommunications Equipment','EDP Services',],crosshair: true},"
+    myreturn+="yAxis: {min: 0,title: {text: 'correlation rate'}},"
+    myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
+    myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [{name: 'self',data: [100]}, {name: 'avg',data: [78.8]}, {name: 'max',data: [39.3]}, {name: 'min',data: [57.4]        }]});});    </script>"
+    return myreturn
+
+
+def addHead():
+    myreturn = ""
+    myreturn += "<html lang=%s><head><meta charset=%s><meta http-equiv=%s content=%s>"%("\"en\"", "\"utf-8\"", "\"X-UA-Compatible\"", "\"IE=edge\"")
+    myreturn += "<meta name=%s content=%s><title>Stock Analysis</title>"%("\"viewport\"", "\"width=device-width, initial-scale=1\"")
+    myreturn += "<link href=%s rel=%s><link href=%s rel=%s>"%("\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css\"", "\"stylesheet\"", "\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css\"", "\"stylesheet\"")
+    # myreturn += "<link href=%s rel=%s><link href=%s rel=%s>"%("../web_beautify/css/bootstrap.min.css", "stylesheet", "../web_beautify/css/customized.css", "stylesheet")
+    myreturn += "<script src=%s></script><script src=%s></script>"%("\"https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js\"", "\"https://oss.maxcdn.com/respond/1.4.2/respond.min.js\"")
+    myreturn += "<script type=%s></script></head>"%("text/javascript")
+
+    return myreturn
+def addTail(superList):
+    global static_path
+    # print "superList:\n%s"%superList
+    myreturn = ""
+    myreturn += "<script src=%s></script>"%("\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"")
+    myreturn += "<script src=%s></script>"%("\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js\"")
+    myreturn += "<script src=%s></script>"%("//code.jquery.com/jquery-1.11.2.min.js")
+    myreturn += "<script src=%s></script>"%("\"http://code.highcharts.com/highcharts.js\"")
+    myreturn += plot(superList)
+    # myreturn += "<script src=%s></script>" %("./js/2c.js")
+    # %("//web_beautify/js/2c.js")
+    return myreturn
+
 def top10String(sorted_List, title, addlink):        
-    outputStr = "<h1>%s</h1>" % title
+    outputStr = "<div><h1>%s</h1><table>" % title
+    # outputStr = "<th>Correlation Score</th>"+outputStr
     for (industry, count) in sorted_List[:10]:
         if addlink:
             url = "http://finance.yahoo.com/q?s=%s&fr=uh3_finance_web&uhb=uhb2" % industry
-            outputStr += '<a href=%s>%s</a>: %s<br>' % (url, industry, str(count))
+            outputStr+="<tr><td><a href=%s>%s:</a></td><td>%s</td></tr>" %(url,industry, count)
+            # outputStr += '<a href=%s>%s</a>: %s<br>' % (url, industry, str(count))
         else:
-            outputStr+= industry + ":\t" + str(count) + "<br>"
+            outputStr+="<tr><td>%s:</td><td>%s</td></tr>" %(industry, count)
+            
+            # outputStr+= industry + ":\t" + str(count) + "<br>"
     
 
+    outputStr += "</table></div>"
+    # outputStr += "<div id=%s style=%s></div>"%("\"container1\"", "\"width:70%; height:300px;\"")
+    
     return outputStr
 
-def Tosnippet(text, keywords, extend):
-    returnText= '...'    
-        
-    for keyword in keywords:        
-        loc= 0
-        tmp= 0
-        loc = text.lower().find(keyword.lower(), loc)
-        toReplace = text[int(loc):int(loc)+int(len(keyword))]            
-        text= text.replace(toReplace, '<strong>{}</strong>'.format(toReplace)) + "..."
-        loc= 0
-        tmp= 0
-        while (loc<len(text) and loc!=-1):
-            tmp = loc        
-            loc = text.lower().find(keyword.lower(), loc)            
-            if loc==-1 or loc==tmp:
-                break            
-            if(loc<len(text) or loc-extend>tmp):
-                returnText = returnText + text[loc-extend:loc+extend] + "..."
-            elif loc==-1 or loc==tmp:
-                break    
 
-    return returnText
-
-def vectorSpaceCalculation(vectorSpace):
-    # vectorSpace stored each token as the key, and its corresponding (docID, TF, idf)s
-    
-    # multiply all TFidfs if they all have the same docid, and then saved in TFidf_dic
-    # so each TFidf_dic[docID] is one 
-    TFidf_dic = {}
-    TFidf_dic_vectorSpace = {}
-    q_space = {}
-    for token in vectorSpace.keys():
-        for (docid, TF, idf) in vectorSpace[token]:
-            value = TF*idf
-            try:
-                if (value==0):
-                    TFidf_dic[docid] = TFidf_dic[docid]
-                else:
-                    TFidf_dic[docid] = TFidf_dic[docid] * value
-
-                TFidf_dic_vectorSpace[docid].append(value)
-            except KeyError:
-                TFidf_dic[docid] = value                    
-                TFidf_dic_vectorSpace[docid] = [value]
-
-            try:
-                q_space[token] = idf
-            except KeyError:
-                q_space[token] = idf
-
-    # Length of q 
-    print TFidf_dic_vectorSpace
-    squ_sum=0
-    for k in q_space.keys():        
-        squ_sum= squ_sum + q_space[k]*q_space[k]
-    q_space_length=math.sqrt(squ_sum)
-
-    resultList = []
-    for eachDocID in TFidf_dic.keys():        
-        
-        # Length of current document
-        squ_sum=0        
-        for value in TFidf_dic_vectorSpace[eachDocID]:
-            squ_sum = squ_sum + value * value
-        curDoc_length = math.sqrt(squ_sum)
-
-        # similarity values
-        cosSim = TFidf_dic[eachDocID]/(q_space_length*curDoc_length)
-        resultList.append((eachDocID,cosSim))
-
-    return resultList
-    
 
 
 class Application(tornado.web.Application):
     def __init__(self, server):
+        global static_path
         if(server == 'indexServer'):            
             handlers = [
                 (r"/", HomeHandler),            
-                (r"/index", idxSearchHandler)
+                (r"/index", idxSearchHandler),
+                (r'/(.*)', web.StaticFileHandler, {'path': "web_beautify/js/2c.js"})
             ]        
         elif (server == 'docServer'):            
             handlers = [
                 (r"/", HomeHandler),            
-                (r"/doc", docSearchHandler)
+                (r"/doc", docSearchHandler),
+                (r'/(.*)', web.StaticFileHandler, {'path': "web_beautify/js/2c.js"})
             ]
         else:
-            raise NameError('wrong server name')
+            raise NameError('wrong server name')        
         
         tornado.web.Application.__init__(self, handlers)
 
@@ -138,12 +143,16 @@ class idxSearchHandler(tornado.web.RequestHandler):
         myquery = urllib.unquote(myquery.split('?q=')[-1])                
         mydict= {}
         OutputStr = []
+        superList = []
         
         #IndustryCorrelation            
         try:
             mydict = eval(IndustryCorrelation[myquery.upper()])
             sorted_List = sorted(mydict.items(), key=operator.itemgetter(1), reverse=True)        
+            superList.append(sorted_List[:10])
             OutputStr.append(top10String(sorted_List, "Top10 related industry to your stock", False))
+            
+            OutputStr.append("<div id=%s style=%s></div>"%("\"container0\"", "\"width:70%; height:300px;\""))
         except:
             print "first"
             OutputStr.append("Stock not found in system"  )
@@ -151,8 +160,15 @@ class idxSearchHandler(tornado.web.RequestHandler):
         #price_correlation            
         try:
             mydict = price_correlation[myquery.upper()]
+            superList.append(mydict['top20'][:10])
+            superList.append(mydict['worst20'][:10])
+            
             OutputStr.append(top10String(mydict['top20'], "Top10 related stocks to your stock", True))
+            OutputStr.append("<div id=%s style=%s></div>"%("\"container1\"", "\"width:70%; height:300px;\""))
+            
             OutputStr.append(top10String(mydict['worst20'], "Worst10 related stocks to your stock", True))            
+            OutputStr.append("<div id=%s style=%s></div>"%("\"container2\"", "\"width:70%; height:300px;\""))
+
         except:
             print "second"
             OutputStr.append("Stock not found in system"  )
@@ -161,7 +177,9 @@ class idxSearchHandler(tornado.web.RequestHandler):
         try:
             match = NEWSCorrelation[myquery.upper()]
             sorted_List = sorted(match, key=lambda tup: tup[1], reverse=True)
+            superList.append(sorted_List[:10])
             OutputStr.append(top10String(sorted_List, "Top10 related NEWScorrelation to your stock",True))            
+            OutputStr.append("<div id=%s style=%s></div>"%("\"container3\"", "\"width:70%; height:300px;\""))
         except:
             print "third"
             OutputStr.append("Stock not found in system"  )
@@ -196,13 +214,15 @@ class idxSearchHandler(tornado.web.RequestHandler):
             OutputStr.append(out + "Stock not found in system")
 
 
-        body = ''
+        body = '<body>'
         for eachItem in OutputStr:
             body+=eachItem 
-
-        # print "OutputStr:\n%s" % OutputStr
-        # print "Body:\n%s" % body
-        self.write(body)
+        result=addHead()+body+addTail(superList)+'</body></html>'        
+        print result
+        fo = open("./web_beautify/myindex.html", "wb")
+        fo.write(result);
+        fo.close()
+        self.write(result)
         
 
 class docSearchHandler(tornado.web.RequestHandler):
@@ -265,30 +285,6 @@ class BackEndApp(object):
         path = os.path.dirname(__file__) + '/../Vincent_Classification/macro_classification/output2/classification'
         classification = pickle.loads(open(path).read())
         
-        # path = os.path.dirname(__file__) + '/../Vincent_PredictModel/output'
-        # with open(path,'r') as f:
-        #     for line in f:
-        #         (stock1, val) = line.split("\t")                                
-        #         P_2015revenue[stock1] = float(val)
-        #         # print P_2015revenue[stock1]
-        #         # try:
-        #         #     NEWSCorrelation[stock1].append( (stock2, int(count)))
-        #         #     # print NEWSCorrelation[stock1]
-        #         # except:
-        #         #     NEWSCorrelation[stock1] = [(stock2, int(count))]
-        #         #     # print NEWSCorrelation[stock1]
-        
-        # path = os.path.dirname(__file__) + '/../Vincent_PredictModel/P_2015revenue'
-        # fileObj = open (path, 'w')
-        # pickle.dump(P_2015revenue,fileObj)
-        # fileObj.close()
-        
-        # path = os.path.dirname(__file__) + '/../Vincent_Classification/macro_classification/output2/part-r-00000'
-        # with open(path,'r') as f:
-        #     for line in f:
-        #         arr = line.split("\t")                                                
-        #         stock = arr.pop(0)                
-        #         classification[stock] = arr
         
         
         
