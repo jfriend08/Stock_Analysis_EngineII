@@ -5,3 +5,5 @@ Data: latest news/comments from SeekingAlpha website
 Ouput: output/part-r-00000
 
 This algorithm has to be run on real hadoop cluster.
+
+The final output is ”score”, the Average item on the last line is the average benchmark for all the stocks, which also needs to be printed. 

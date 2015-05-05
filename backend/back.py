@@ -34,19 +34,34 @@ def plot(superList):
     finalOut=""
     for i in range(len(superList)):
         elmList = []
+        valString = ""
         valList = []
         myreturn="<script type=%s>$(function () {$('#container%s').highcharts({chart: {type: 'column'},"%("\"text/javascript\"", i)
         myreturn+="title: {text: 'Related Industries Ranking'},subtitle: {text: 'Source: stock engine'},"
         print "============ %s ============" % i
-        for (elm,val) in superList[i]:
-            elmList.append(str(elm))
-            valList.append("{name: '%s',data: [%s]}"%(elm,val))
-            print "elm:\t%s\tval:%s\tType(elm):%s"%(elm,val,type(elm))
-        print "+++++ elmList +++++\n%s"%elmList
-        myreturn+="xAxis: {categories: %s,crosshair: true}," % str(elmList)
-        myreturn+="yAxis: {min: 0,title: {text: 'correlation count'}},"
-        myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
-        myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});</script>"%(",".join(valList))
+        if i== 4:
+            valString = "{name: 'sp up, stock up faster',data: [%s]}, {name: 'sp up, stock up slower',data: [%s]}, {name: 'sp up, stock down',data: [%s]}, {name: 'sp down, stock down faster',data: [%s]}, {name: 'sp down, stock down slower',data: [%s]}, {name: 'sp down, stock up',data: [%s]}"%(superList[i][0], superList[i][1], superList[i][2], superList[i][3], superList[i][4], superList[i][5])
+            # for val in superList[i]:
+            #     # elmList.append(str(elm))
+            #     # valList.append(val)
+            #     valList.append("{name: 'self',data: [%s]}"%str(val))
+            #     print "elm:\t%s\tval:%s\tType(elm):%s"%(elm,val,type(elm))
+            print "+++++ elmList +++++\n%s"%elmList
+            print "+++++ valString +++++\n%s"%valString
+            myreturn+="xAxis: {categories: %s,crosshair: true}," % str(elmList)
+            myreturn+="yAxis: {min: 0,title: {text: 'correlation count'}},"
+            myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
+            myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});</script>"%valString
+        else:
+            for (elm,val) in superList[i]:
+                elmList.append(str(elm))
+                valList.append("{name: '%s',data: [%s]}"%(elm,val))
+                print "elm:\t%s\tval:%s\tType(elm):%s"%(elm,val,type(elm))
+            print "+++++ elmList +++++\n%s"%elmList
+            myreturn+="xAxis: {categories: %s,crosshair: true}," % str(elmList)
+            myreturn+="yAxis: {min: 0,title: {text: 'correlation count'}},"
+            myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
+            myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});</script>"%(",".join(valList))
         
         finalOut+=myreturn
     # myreturn= ""
@@ -150,7 +165,7 @@ class idxSearchHandler(tornado.web.RequestHandler):
             mydict = eval(IndustryCorrelation[myquery.upper()])
             sorted_List = sorted(mydict.items(), key=operator.itemgetter(1), reverse=True)        
             superList.append(sorted_List[:10])
-            OutputStr.append(top10String(sorted_List, "Top10 related industry to your stock", False))
+            OutputStr.append(top10String(sorted_List, "Top10 related industry", False))
             
             OutputStr.append("<div id=%s style=%s></div>"%("\"container0\"", "\"width:70%; height:300px;\""))
         except:
@@ -163,10 +178,10 @@ class idxSearchHandler(tornado.web.RequestHandler):
             superList.append(mydict['top20'][:10])
             superList.append(mydict['worst20'][:10])
             
-            OutputStr.append(top10String(mydict['top20'], "Top10 related stocks to your stock", True))
+            OutputStr.append(top10String(mydict['top20'], "Top10 related stocks", True))
             OutputStr.append("<div id=%s style=%s></div>"%("\"container1\"", "\"width:70%; height:300px;\""))
             
-            OutputStr.append(top10String(mydict['worst20'], "Worst10 related stocks to your stock", True))            
+            OutputStr.append(top10String(mydict['worst20'], "Worst10 related stocks", True))            
             OutputStr.append("<div id=%s style=%s></div>"%("\"container2\"", "\"width:70%; height:300px;\""))
 
         except:
@@ -178,7 +193,7 @@ class idxSearchHandler(tornado.web.RequestHandler):
             match = NEWSCorrelation[myquery.upper()]
             sorted_List = sorted(match, key=lambda tup: tup[1], reverse=True)
             superList.append(sorted_List[:10])
-            OutputStr.append(top10String(sorted_List, "Top10 related NEWScorrelation to your stock",True))            
+            OutputStr.append(top10String(sorted_List, "Top10 NEWScorrelation",True))            
             OutputStr.append("<div id=%s style=%s></div>"%("\"container3\"", "\"width:70%; height:300px;\""))
         except:
             print "third"
@@ -208,7 +223,10 @@ class idxSearchHandler(tornado.web.RequestHandler):
             matchList[4] = matchList[4]/secondsum
             matchList[5] = matchList[5]/secondsum            
             out+= myquery.upper() + ":\t" + str(matchList) + "<br>"
-            OutputStr.append(out)            
+            OutputStr.append(out)
+            superList.append(matchList)
+            OutputStr.append("<div id=%s style=%s></div>"%("\"container4\"", "\"width:70%; height:300px;\""))
+            print "matchList:\n%s"%matchList
         except:
             print "third"
             OutputStr.append(out + "Stock not found in system")
