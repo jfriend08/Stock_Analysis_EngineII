@@ -37,21 +37,71 @@ def plot(superList):
         valString = ""
         valList = []
         myreturn="<script type=%s>$(function () {$('#container%s').highcharts({chart: {type: 'column'},"%("\"text/javascript\"", i)
-        myreturn+="title: {text: 'Related Industries Ranking'},subtitle: {text: 'Source: stock engine'},"
+        myreturn+="title: {text: ''},subtitle: {text: ''},"
         print "============ %s ============" % i
-        if i== 4:
-            valString = "{name: 'sp up, stock up faster',data: [%s]}, {name: 'sp up, stock up slower',data: [%s]}, {name: 'sp up, stock down',data: [%s]}, {name: 'sp down, stock down faster',data: [%s]}, {name: 'sp down, stock down slower',data: [%s]}, {name: 'sp down, stock up',data: [%s]}"%(superList[i][0], superList[i][1], superList[i][2], superList[i][3], superList[i][4], superList[i][5])
-            # for val in superList[i]:
-            #     # elmList.append(str(elm))
-            #     # valList.append(val)
-            #     valList.append("{name: 'self',data: [%s]}"%str(val))
-            #     print "elm:\t%s\tval:%s\tType(elm):%s"%(elm,val,type(elm))
+        
+        
+        if i == 5:
+            try:
+                myreturn="<script type=%s>$(function() {$('#container%s').highcharts({chart: {plotBackgroundColor: null,plotBorderWidth: null,plotShadow: false},"%("\"text/javascript\"", i)
+                myreturn+="title: {text: 'Chance of increasing revenue in 2015'},tooltip: {pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'},"
+                myreturn+="plotOptions: {pie: {allowPointSelect: true,cursor: 'pointer',dataLabels: {enabled: true,format: '<b>{point.name}</b>: {point.percentage:.1f} %',style: {color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'}}}},"
+                myreturn+="series: [{type: 'pie',name: 'chance',data: [['increasing revenue',   %s],['not increasing revenue',       %s],]}]});})"%(superList[i][0], superList[i][1])
+            except:
+                myreturn="<script type=%s>$(function() {$('#container%s').highcharts({chart: {plotBackgroundColor: null,plotBorderWidth: null,plotShadow: false},"%("\"text/javascript\"", i)
+                myreturn+="title: {text: 'Chance of increasing revenue in 2015'},tooltip: {pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'},"
+                myreturn+="plotOptions: {pie: {allowPointSelect: true,cursor: 'pointer',dataLabels: {enabled: true,format: '<b>{point.name}</b>: {point.percentage:.1f} %',style: {color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'}}}},"
+                myreturn+="series: [{type: 'pie',name: 'chance',data: [['increasing revenue',   %s],['not increasing revenue',       %s],]}]});})"%(0, 0)
+            
+        
+        elif i== 6:
+            try:
+                valString = "{name: 'sp up, stock up faster',data: [%s]}, {name: 'sp up, stock up slower',data: [%s]}, {name: 'sp up, stock down',data: [%s]}, {name: 'sp down, stock down faster',data: [%s]}, {name: 'sp down, stock down slower',data: [%s]}, {name: 'sp down, stock up',data: [%s]}"%(superList[i][0], superList[i][1], superList[i][2], superList[i][3], superList[i][4], superList[i][5])            
+                print "+++++ elmList +++++\n%s"%elmList
+                print "+++++ valString +++++\n%s"%valString
+                myreturn+="xAxis: {categories: %s,crosshair: true}," % str(elmList)
+                myreturn+="yAxis: {min: 0,title: {text: 'MapReduce Counts'}},"
+                myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
+                myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});"%valString
+            except:
+                valString = "{name: 'sp up, stock up faster',data: [%s]}, {name: 'sp up, stock up slower',data: [%s]}, {name: 'sp up, stock down',data: [%s]}, {name: 'sp down, stock down faster',data: [%s]}, {name: 'sp down, stock down slower',data: [%s]}, {name: 'sp down, stock up',data: [%s]}"%(0, 0, 0, 0, 0, 0)            
+                print "+++++ elmList +++++\n%s"%elmList
+                print "+++++ valString +++++\n%s"%valString
+                myreturn+="xAxis: {categories: %s,crosshair: true}," % str(elmList)
+                myreturn+="yAxis: {min: 0,title: {text: 'MapReduce Counts'}},"
+                myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
+                myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});"%valString
+        
+        
+        elif i==7:
+            try:
+                valString = "{name: 'query',data: [%s]}, {name: 'Average',data: [%s]}"%(superList[i][0], superList[i][1])            
+                print "+++++ elmList +++++\n%s"%elmList
+                print "+++++ valString +++++\n%s"%valString
+                myreturn+="xAxis: {categories: ['query vs average'], crosshair: true},"
+                myreturn+="yAxis: {min: 0,title: {text: 'Sentimental Score'}},"
+                myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
+                myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});"%valString
+            except:
+                valString = "{name: 'query',data: [%s]}, {name: 'Average',data: [%s]}"%(superList[i][0], superList[i][1])            
+                print "+++++ elmList +++++\n%s"%elmList
+                print "+++++ valString +++++\n%s"%valString
+                myreturn+="xAxis: {categories: ['query vs average'], crosshair: true},"
+                myreturn+="yAxis: {min: 0,title: {text: 'Sentimental Score'}},"
+                myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
+                myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});"%valString
+
+            
+        elif i<2:
+            for (elm,val) in superList[i]:
+                elmList.append(str(elm))
+                valList.append("{name: '%s',data: [%s]}"%(elm,val))
+                print "elm:\t%s\tval:%s\tType(elm):%s"%(elm,val,type(elm))
             print "+++++ elmList +++++\n%s"%elmList
-            print "+++++ valString +++++\n%s"%valString
             myreturn+="xAxis: {categories: %s,crosshair: true}," % str(elmList)
-            myreturn+="yAxis: {min: 0,title: {text: 'correlation count'}},"
+            myreturn+="yAxis: {min: 100,title: {text: 'MapReduce Counts'}},"
             myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
-            myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});</script>"%valString
+            myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});"%(",".join(valList))
         else:
             for (elm,val) in superList[i]:
                 elmList.append(str(elm))
@@ -59,11 +109,11 @@ def plot(superList):
                 print "elm:\t%s\tval:%s\tType(elm):%s"%(elm,val,type(elm))
             print "+++++ elmList +++++\n%s"%elmList
             myreturn+="xAxis: {categories: %s,crosshair: true}," % str(elmList)
-            myreturn+="yAxis: {min: 0,title: {text: 'correlation count'}},"
+            myreturn+="yAxis: {min: 0,title: {text: 'MapReduce Counts'}},"
             myreturn+="tooltip: {headerFormat: '<span style=%s>{point.key}</span><table>',pointFormat: '<tr><td style=%s>{series.name}: </td>' +'<td style=%s><b>{point.y:.1f} mm</b></td></tr>',footerFormat: '</table>',shared: true,useHTML: true},"%("\"font-size:10px\"", "\"color:{series.color};padding:0\"", "\"padding:0\"")
-            myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});</script>"%(",".join(valList))
+            myreturn+="plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},series: [%s]});});"%(",".join(valList))
         
-        finalOut+=myreturn
+        finalOut+=myreturn+"</script>"
     # myreturn= ""
     # myreturn+="<script type=%s>$(function () {$('#container').highcharts({chart: {type: 'column'},"%("\"text/javascript\"")
     # myreturn+="title: {text: 'Related Industries Ranking'},subtitle: {text: 'Source: stock engine'},"
@@ -153,93 +203,117 @@ class Application(tornado.web.Application):
 class idxSearchHandler(tornado.web.RequestHandler):
     @gen.coroutine            
     def get(self):
-        global IndustryCorrelation, tokenizer, price_correlation, NEWSCorrelation, P_2015revenue, classification
+        global IndustryCorrelation, tokenizer, price_correlation, NEWSCorrelation, P_2015revenue, classification, SentimentalScore
         myquery = self.request.uri
         myquery = urllib.unquote(myquery.split('?q=')[-1])                
         mydict= {}
         OutputStr = []
         superList = []
-        
-        #IndustryCorrelation            
         try:
-            mydict = eval(IndustryCorrelation[myquery.upper()])
-            sorted_List = sorted(mydict.items(), key=operator.itemgetter(1), reverse=True)        
-            superList.append(sorted_List[:10])
-            OutputStr.append(top10String(sorted_List, "Top10 related industry", False))
+            #IndustryCorrelation            
+            try:
+                mydict = eval(IndustryCorrelation[myquery.upper()])
+                sorted_List = sorted(mydict.items(), key=operator.itemgetter(1), reverse=True)        
+                superList.append(sorted_List[:10])
+                OutputStr.append(top10String(sorted_List, "Top10 related industry", False))            
+                OutputStr.append("<div id=%s style=%s></div>"%("\"container0\"", "\"width:70%; height:500px;\""))
+                
+                sorted_List = sorted(mydict.items(), key=operator.itemgetter(1))        
+                superList.append(sorted_List[:10])
+                OutputStr.append(top10String(sorted_List, "Worst10 related industry", False))            
+                OutputStr.append("<div id=%s style=%s></div>"%("\"container1\"", "\"width:70%; height:500px;\""))
+            except:
+                print "1 error"
+                OutputStr.append("Stock not found in system"  )
+                
+            #price_correlation            
+            try:
+                mydict = price_correlation[myquery.upper()]
+                superList.append(mydict['top20'][:10])
+                superList.append(mydict['worst20'][:10])
+                
+                OutputStr.append(top10String(mydict['top20'], "Top10 related stocks", True))
+                OutputStr.append("<div id=%s style=%s></div>"%("\"container2\"", "\"width:70%; height:500px;\""))
+                
+                OutputStr.append(top10String(mydict['worst20'], "Worst10 related stocks", True))            
+                OutputStr.append("<div id=%s style=%s></div>"%("\"container3\"", "\"width:70%; height:500px;\""))
+
+            except:
+                print "2 error"
+                OutputStr.append("Stock not found in system"  )
+
+            #NEWSCorrelation
+            try:
+                match = NEWSCorrelation[myquery.upper()]
+                sorted_List = sorted(match, key=lambda tup: tup[1], reverse=True)
+                superList.append(sorted_List[:10])
+                OutputStr.append(top10String(sorted_List, "Top10 NEWScorrelation",True))            
+                OutputStr.append("<div id=%s style=%s></div>"%("\"container4\"", "\"width:70%; height:500px;\""))
+            except:
+                print "3 error"
+                OutputStr.append("Stock not found in system"  )
+
+            #P_2015revenue        
+            out = "<h1>Chance of increasing revenue in 2015</h1>"
+            try:
+                match = float(P_2015revenue[myquery.upper()])*100
+                out+= myquery.upper() + ":\t" + str(match) + "%<br>"            
+                OutputStr.append(out)            
+                superList.append([match, 100-match])
+                OutputStr.append("<div id=%s style=%s></div>"%("\"container5\"", "\"width:70%; height:500px;\""))
+            except:
+                print "4 error"
+                OutputStr.append(out + "Stock not found in system")        
+                superList.append([0, 0])
+                # OutputStr.append("<div id=%s style=%s></div>"%("\"container5\"", "\"width:70%; height:500px;\""))
+
             
-            OutputStr.append("<div id=%s style=%s></div>"%("\"container0\"", "\"width:70%; height:300px;\""))
-        except:
-            print "first"
-            OutputStr.append("Stock not found in system"  )
+            # print classification
+            out = "<h1>Classification</h1>"        
+            try:
+                matchList = [float(x) for x in classification[myquery.upper()]]            
+                firstsum = sum(matchList[:3])
+                secondsum =  sum(matchList[3:])
+                matchList[0] = matchList[0]/firstsum
+                matchList[1] = matchList[1]/firstsum
+                matchList[2] = matchList[2]/firstsum
+                matchList[3] = matchList[3]/secondsum
+                matchList[4] = matchList[4]/secondsum
+                matchList[5] = matchList[5]/secondsum            
+                out+= myquery.upper() + ":\t" + str(matchList) + "<br>"
+                OutputStr.append(out)
+                superList.append(matchList)
+                OutputStr.append("<div id=%s style=%s></div>"%("\"container6\"", "\"width:70%; height:500px;\""))
+                print "matchList:\n%s"%matchList
+            except:
+                print "5 error"
+                OutputStr.append(out + "Stock not found in system")
             
-        #price_correlation            
-        try:
-            mydict = price_correlation[myquery.upper()]
-            superList.append(mydict['top20'][:10])
-            superList.append(mydict['worst20'][:10])
-            
-            OutputStr.append(top10String(mydict['top20'], "Top10 related stocks", True))
-            OutputStr.append("<div id=%s style=%s></div>"%("\"container1\"", "\"width:70%; height:300px;\""))
-            
-            OutputStr.append(top10String(mydict['worst20'], "Worst10 related stocks", True))            
-            OutputStr.append("<div id=%s style=%s></div>"%("\"container2\"", "\"width:70%; height:300px;\""))
+            # SentimentalScore
+            out = "<h1>SentimentalScore</h1>"
+            try:
+                match = SentimentalScore[myquery.upper()]            
+                out+= "%s:\t%s<br>Average:\t%s"%(myquery.upper(), match, SentimentalScore['Average'])
+                # myquery.upper() + ":\t" + str(match) + "<br>"
+                OutputStr.append(out)            
+                superList.append([float(match), float(SentimentalScore['Average'])])
+                OutputStr.append("<div id=%s style=%s></div>"%("\"container7\"", "\"width:70%; height:500px;\""))
+            except:
+                print "6 error"
+                OutputStr.append(out + "Stock not found in system")
 
+
+
+            body = '<body>'
+            for eachItem in OutputStr:
+                body+=eachItem 
+            result=addHead()+body+addTail(superList)+'</body></html>'        
+            print result
+            fo = open("./web_beautify/myindex.html", "wb")
+            fo.write(result);
+            fo.close()
         except:
-            print "second"
-            OutputStr.append("Stock not found in system"  )
-
-        #NEWSCorrelation
-        try:
-            match = NEWSCorrelation[myquery.upper()]
-            sorted_List = sorted(match, key=lambda tup: tup[1], reverse=True)
-            superList.append(sorted_List[:10])
-            OutputStr.append(top10String(sorted_List, "Top10 NEWScorrelation",True))            
-            OutputStr.append("<div id=%s style=%s></div>"%("\"container3\"", "\"width:70%; height:300px;\""))
-        except:
-            print "third"
-            OutputStr.append("Stock not found in system"  )
-
-        #P_2015revenue        
-        out = "<h1>Chance of increasing revenue in 2015</h1>"
-        try:
-            match = P_2015revenue[myquery.upper()]            
-            out+= myquery.upper() + ":\t" + str(match) + "<br>"
-            OutputStr.append(out)            
-        except:
-            print "third"
-            OutputStr.append(out + "Stock not found in system")
-
-        
-        # print classification
-        out = "<h1>Classification</h1>"        
-        try:
-            matchList = [float(x) for x in classification[myquery.upper()]]            
-            firstsum = sum(matchList[:3])
-            secondsum =  sum(matchList[3:])
-            matchList[0] = matchList[0]/firstsum
-            matchList[1] = matchList[1]/firstsum
-            matchList[2] = matchList[2]/firstsum
-            matchList[3] = matchList[3]/secondsum
-            matchList[4] = matchList[4]/secondsum
-            matchList[5] = matchList[5]/secondsum            
-            out+= myquery.upper() + ":\t" + str(matchList) + "<br>"
-            OutputStr.append(out)
-            superList.append(matchList)
-            OutputStr.append("<div id=%s style=%s></div>"%("\"container4\"", "\"width:70%; height:300px;\""))
-            print "matchList:\n%s"%matchList
-        except:
-            print "third"
-            OutputStr.append(out + "Stock not found in system")
-
-
-        body = '<body>'
-        for eachItem in OutputStr:
-            body+=eachItem 
-        result=addHead()+body+addTail(superList)+'</body></html>'        
-        print result
-        fo = open("./web_beautify/myindex.html", "wb")
-        fo.write(result);
-        fo.close()
+            result="<h>No Matching</h>"
         self.write(result)
         
 
@@ -275,7 +349,7 @@ class HomeHandler(tornado.web.RequestHandler):
 
 class BackEndApp(object):
     def __init__(self, serverType, serverNum, port):
-        global IndustryCorrelation, tokenizer, price_correlation, NEWSCorrelation, P_2015revenue, classification
+        global IndustryCorrelation, tokenizer, price_correlation, NEWSCorrelation, P_2015revenue, classification, SentimentalScore
         if (serverType=='indexServer'):
             path = os.path.dirname(__file__) + '/../category_correlation/output/correlation_output_Final.txt'
             # path = '../out/correlation_output_Final.txt'
@@ -302,6 +376,15 @@ class BackEndApp(object):
         print bcolors.OKGREEN + "Loading classification" + bcolors.ENDC
         path = os.path.dirname(__file__) + '/../Vincent_Classification/macro_classification/output2/classification'
         classification = pickle.loads(open(path).read())
+
+        SentimentalScore={}
+        f = open("Vincent_NEWSSentimental/score", 'r')
+        for line in f:
+            (stock,val) = line.split()
+            SentimentalScore[stock] = val
+
+            
+
         
         
         
